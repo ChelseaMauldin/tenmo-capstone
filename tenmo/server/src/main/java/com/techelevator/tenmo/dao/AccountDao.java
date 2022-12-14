@@ -8,15 +8,17 @@ import java.util.List;
 public interface AccountDao {
     //CRUD
 
-    Account getAccount(int accountId);
+    Account getAccountFromAccountId(int accountId);
+
+    Account getAccountFromUserId(int userId);
 
     List<Account> getAllAccounts();
 
-    Account createAccount (Account account);
+//    Account createAccount (Account account);
 
     boolean updateAccount(Account account);
 
     boolean deleteAccount(int accountId);
 
-    BigDecimal getBalance(int accountId);
+    BigDecimal getBalance(int userId);
 }

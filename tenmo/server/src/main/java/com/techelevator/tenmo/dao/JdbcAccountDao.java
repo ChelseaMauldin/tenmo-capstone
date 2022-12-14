@@ -17,13 +17,28 @@ public class JdbcAccountDao implements AccountDao{
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
-    public Account getAccount(int accountId) {
+    public Account getAccountFromAccountId(int accountId) {
         Account account = null;
         String sql = "SELECT account_id, user_id, balance " +
                 "FROM account " +
                 "WHERE account_id = ?";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
+        if (results.next()){
+            account = mapRowToAccount(results);
+        }
+        return account;
+    }
+
+    @Override
+    public Account getAccountFromUserId(int userId) {
+        Account account = null;
+        String sql = "SELECT a.account_id, a.user_id, a.balance " +
+                "FROM account a " +
+                "JOIN tenmo_user tu ON a.user_id = tu.user_id " +
+                "WHERE tu.user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         if (results.next()){
             account = mapRowToAccount(results);
         }
@@ -42,18 +57,18 @@ public class JdbcAccountDao implements AccountDao{
         return accountList;
     }
 
-    @Override
-    public Account createAccount(Account account) {
-        Account newAccount = null;
-        String sql = "INSERT INTO account (user_id, balance) " +
-                "VALUES (?, ?) " +
-                "JOIN ON user_id " +
-                "RETURNING account_id";
-        Integer accountId = jdbcTemplate.queryForObject(sql, Integer.class,
-                account.getUserId(), account.getBalance());
-        newAccount = getAccount(accountId);
-        return newAccount;
-    }
+//    @Override
+//    public Account createAccount(Account account) {
+//        Account newAccount = null;
+//        String sql = "INSERT INTO account (user_id, balance) " +
+//                "VALUES (?, ?) " +
+//                "JOIN ON user_id " +
+//                "RETURNING account_id";
+//        Integer accountId = jdbcTemplate.queryForObject(sql, Integer.class,
+//                account.getUserId(), account.getBalance());
+//        newAccount = getAccount(accountId);
+//        return newAccount;
+//    }
 
     @Override
     public boolean updateAccount(Account account) {
@@ -81,20 +96,23 @@ public class JdbcAccountDao implements AccountDao{
     }
 
     @Override
-    public BigDecimal getBalance(int accountId) {
+    public BigDecimal getBalance(int userId) {
         Account account = null;
-
-        String sql = "SELECT balance FROM account " +
-                "WHERE account_id = ?";
-        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, accountId);
+        BigDecimal balance = new BigDecimal("0.00");
+        String sql = "SELECT a.account_id, a.user_id, a.balance " +
+                "FROM account a " +
+                "JOIN tenmo_user tu ON tu.user_id = a.user_id " +
+                "WHERE tu.user_id = ?";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId);
         if (results.next()) {
             try {
             account = mapRowToAccount(results);
+            balance = account.getBalance();
             } catch (NullPointerException e) {
             System.out.println("Error -- " + e.getStackTrace());
             }
         }
-        return account.getBalance();
+        return balance;
     }
 
     private Account mapRowToAccount(SqlRowSet results){

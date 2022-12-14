@@ -9,7 +9,7 @@ public class Account {
     private int accountId;
     @Min(value = 1001)
     private int userId;
-    private BigDecimal balance = new BigDecimal("1000.00");
+    private BigDecimal balance;
 
     public Account() {
     }
