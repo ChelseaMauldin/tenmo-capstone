@@ -21,4 +21,6 @@ public interface AccountDao {
     boolean deleteAccount(int accountId);
 
     BigDecimal getBalance(int userId);
+
+    boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
 }

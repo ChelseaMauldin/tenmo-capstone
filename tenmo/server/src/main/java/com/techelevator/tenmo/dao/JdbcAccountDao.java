@@ -115,6 +115,23 @@ public class JdbcAccountDao implements AccountDao{
         return balance;
     }
 
+    @Override
+    public boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
+        String sql = "UPDATE account " +
+                     "SET balance = balance - ? " +
+                     "WHERE user_id = ?; " +
+                     "UPDATE account " +
+                     "SET balance = balance + ? " +
+                     "WHERE user_id = ?;";
+        boolean success = false;
+        int linesReturned = (jdbcTemplate.update(sql, amountToTransfer, userSending, amountToTransfer, userReceiving));
+        if (linesReturned == 2){
+            success = true;
+        }
+        return success;
+    }
+
+
     private Account mapRowToAccount(SqlRowSet results){
         int accountId = results.getInt("account_id");
         int userId = results.getInt("user_id");
