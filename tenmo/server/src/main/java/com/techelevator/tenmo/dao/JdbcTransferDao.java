@@ -13,6 +13,7 @@ import java.util.List;
 public class JdbcTransferDao implements TransferDao {
 
     JdbcTemplate jdbcTemplate;
+
     public JdbcTransferDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
@@ -36,16 +37,16 @@ public class JdbcTransferDao implements TransferDao {
                 "SET balance = balance + ? " +
                 "WHERE user_id = ?;";
 
-        String getBalance = "SELECT balance FROM account" +
-                            "WHERE user_id = ?;";
+        String getBalance = "SELECT balance FROM account " +
+                "WHERE user_id = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(getBalance, userSending);
         BigDecimal balance = new BigDecimal("0.00");
-        if (results.next()){
+        if (results.next()) {
             balance = results.getBigDecimal("balance");
         }
 
-        if ((userSending != userReceiving) && (amountToTransfer.compareTo(new BigDecimal("0.00"))> 0)
-             && (amountToTransfer.compareTo(balance)< 0)){
+        if ((userSending != userReceiving) && (amountToTransfer.compareTo(new BigDecimal("0.00")) > 0)
+                && (amountToTransfer.compareTo(balance) < 0)) {
             jdbcTemplate.update(sql, amountToTransfer, userSending, amountToTransfer, userReceiving);
             return true;
         }
@@ -53,12 +54,12 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer, boolean isApproved) {
+    public boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer, String status) {
         String sql = "INSERT INTO transfer (user_sending, user_receiving, amount, status) " +
                 "VALUES (?, ?, ?, ?) RETURNING transfer_id";
         try {
             Integer transferId = jdbcTemplate.queryForObject(sql, Integer.class,
-                    userSending, userReceiving, amountToTransfer, isApproved);
+                    userSending, userReceiving, amountToTransfer, status);
         } catch (DataAccessException e) {
             return false;
         }

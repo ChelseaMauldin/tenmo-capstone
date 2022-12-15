@@ -8,17 +8,17 @@ public class Transfer {
     private int userSending;
     private int userReceiving;
     private BigDecimal moneyTransferred;
-    private boolean isApproved;
+    private String status;
 
     public Transfer() {
     }
 
-    public Transfer(int transfer_id, int userSending, int userReceiving, BigDecimal moneyTransferred, boolean isApproved) {
+    public Transfer(int transfer_id, int userSending, int userReceiving, BigDecimal moneyTransferred, String status) {
         this.transfer_id = transfer_id;
         this.userSending = userSending;
         this.userReceiving = userReceiving;
         this.moneyTransferred = moneyTransferred;
-        this.isApproved = isApproved;
+        this.status = status;
     }
 
     public int getTransfer_id() {
@@ -49,11 +49,11 @@ public class Transfer {
         this.moneyTransferred = moneyTransferred;
     }
 
-    public boolean isApproved() {
-        return isApproved;
+    public String getStatus() {
+        return status;
     }
-    public void setApproved(boolean approved) {
-        isApproved = approved;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override

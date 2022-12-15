@@ -38,7 +38,7 @@ public class AccountController {
 //    }
 
     @RequestMapping(path = "/account", method = RequestMethod.GET)
-    public Account getAccount(Principal principal){
+    public Account getAccount(Principal principal) {
         String username = principal.getName();
         int userId = userDao.findIdByUsername(username);
         Account account = accountDao.getAccountFromUserId(userId);
@@ -50,7 +50,7 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/account/balance", method = RequestMethod.GET)
-    public BigDecimal getBalance(Principal principal){
+    public BigDecimal getBalance(Principal principal) {
         String username = principal.getName();
         int userId = userDao.findIdByUsername(username);
         BigDecimal balance = accountDao.getBalance(userId);
@@ -62,23 +62,30 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/account/transfer", method = RequestMethod.GET)
-    public List<String> getListOfUsers(Principal principal){
+    public List<String> getListOfUsers(Principal principal) {
         return userDao.listUsernames(principal.getName());
     }
 
     @RequestMapping(path = "/account/transfer", method = RequestMethod.POST)
-    public boolean transferMoney(@RequestBody Transfer transfer){
+    public boolean transferMoney(@RequestBody Transfer transfer, Principal principal) {
+        String username = principal.getName();
+        int userId = userDao.findIdByUsername(username);
+        if ((userId != transfer.getUserSending()) || (userId == transfer.getUserReceiving()) && (!transferDao.Transfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred()))) {
+            transferDao.createTransfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred(), "Denied");
+        } else {
+            transferDao.createTransfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred(), "Approved");
+            return true;
+        }
         // if transfer is true,
-            // create transfer
-            // plug in things
-            // set approved to true
+        // create transfer
+        // plug in things
+        // set approved to true
         // if transfer is false,
-            // create transfer
-            // plug in things
-            // set approved to false
-        return transferDao.Transfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred());
+        // create transfer
+        // plug in things
+        // set approved to false
+        return false;
     }
-
 
 
 }
