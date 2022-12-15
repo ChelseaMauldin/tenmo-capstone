@@ -68,6 +68,14 @@ public class AccountController {
 
     @RequestMapping(path = "/account/transfer", method = RequestMethod.POST)
     public boolean transferMoney(@RequestBody Transfer transfer){
+        // if transfer is true,
+            // create transfer
+            // plug in things
+            // set approved to true
+        // if transfer is false,
+            // create transfer
+            // plug in things
+            // set approved to false
         return transferDao.Transfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred());
     }
 

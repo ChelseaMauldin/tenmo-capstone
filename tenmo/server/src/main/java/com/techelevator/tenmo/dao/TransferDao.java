@@ -13,5 +13,8 @@ public interface TransferDao {
 
     boolean Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
 
+    boolean createTransfer(int userSending, int userReceiving,
+                           BigDecimal amountToTransfer, boolean isApproved);
+
 
 }
