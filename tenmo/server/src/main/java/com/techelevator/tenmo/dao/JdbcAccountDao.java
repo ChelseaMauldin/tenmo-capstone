@@ -57,19 +57,6 @@ public class JdbcAccountDao implements AccountDao{
         return accountList;
     }
 
-//    @Override
-//    public Account createAccount(Account account) {
-//        Account newAccount = null;
-//        String sql = "INSERT INTO account (user_id, balance) " +
-//                "VALUES (?, ?) " +
-//                "JOIN ON user_id " +
-//                "RETURNING account_id";
-//        Integer accountId = jdbcTemplate.queryForObject(sql, Integer.class,
-//                account.getUserId(), account.getBalance());
-//        newAccount = getAccount(accountId);
-//        return newAccount;
-//    }
-
     @Override
     public boolean updateAccount(Account account) {
         String sql = "UPDATE account " +
@@ -113,22 +100,6 @@ public class JdbcAccountDao implements AccountDao{
             }
         }
         return balance;
-    }
-
-    @Override
-    public boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
-        String sql = "UPDATE account " +
-                     "SET balance = balance - ? " +
-                     "WHERE user_id = ?; " +
-                     "UPDATE account " +
-                     "SET balance = balance + ? " +
-                     "WHERE user_id = ?;";
-        boolean success = false;
-        int linesReturned = (jdbcTemplate.update(sql, amountToTransfer, userSending, amountToTransfer, userReceiving));
-        if (linesReturned == 2){
-            success = true;
-        }
-        return success;
     }
 
 

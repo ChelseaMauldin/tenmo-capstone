@@ -22,5 +22,4 @@ public interface AccountDao {
 
     BigDecimal getBalance(int userId);
 
-    boolean createTransfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
 }
