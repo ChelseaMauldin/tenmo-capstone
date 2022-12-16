@@ -19,7 +19,7 @@ public class JdbcAccountDaoTest extends BaseDaoTests {
     private static final Account ACCOUNT_2 = new Account(2002, 1002, new BigDecimal("1000.00"));
     private static final Account ACCOUNT_3 = new Account(2003, 1003, new BigDecimal("1000.00"));
     private static final Account ACCOUNT_4 = new Account(2004, 1004, new BigDecimal("1000.00"));
-    private static final Account ACCOUNT_5 = new Account(2005, 1005, new BigDecimal("1000.00"));
+    private static final Account ACCOUNT_5 = new Account(2005, 1005, new BigDecimal("500.00"));
 
     private JdbcAccountDao dao;
 
@@ -61,6 +61,17 @@ public class JdbcAccountDaoTest extends BaseDaoTests {
         expected.add(ACCOUNT_5);
         List<Account> actual = dao.getAllAccounts();
         assertAccountListsMatch(expected, actual);
+    }
+
+    @Test
+    public void getBalance_returns_correct_balance(){
+        BigDecimal expected = new BigDecimal("1000.00");
+        BigDecimal actual = dao.getBalance(1001);
+        Assert.assertEquals(expected, actual);
+
+        expected = new BigDecimal("500.00");
+        actual = dao.getBalance(1005);
+        Assert.assertEquals(expected, actual);
     }
 
 
