@@ -7,6 +7,7 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -19,13 +20,29 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public Transfer getTransfer() {
-        return null;
+    public Transfer getTransfer(int userId, int transferId) {
+        Transfer transfer = null;
+        String sql = "SELECT transfer_id, user_sending, user_receiving, amount, status " +
+                "FROM transfer " +
+                "WHERE (user_sending = ? OR user_receiving = ?) AND transfer_id = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId, transferId);
+        if (results.next()) {
+            transfer = mapRowToTransfer(results);
+        }
+        return transfer;
     }
 
     @Override
-    public List<Transfer> getAllTransfers() {
-        return null;
+    public List<Transfer> getAllTransfers(int userId) {
+        List<Transfer> transferList = new ArrayList<>();
+        String sql = "SELECT transfer_id, user_sending, user_receiving, amount, status " +
+                     "FROM transfer " +
+                     "WHERE user_sending = ? OR user_receiving = ?;";
+        SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
+        while (results.next()) {
+            transferList.add(mapRowToTransfer(results));
+        }
+        return transferList;
     }
 
     @Override
@@ -67,45 +84,14 @@ public class JdbcTransferDao implements TransferDao {
         return true;
     }
 
-
-
-    /*@Override
-    public boolean Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
-        String sql = "UPDATE account " +
-                "SET balance = balance - ? " +
-                "WHERE user_id = ?; " +
-                "UPDATE account " +
-                "SET balance = balance + ? " +
-                "WHERE user_id = ?;";
-        boolean success = false;
-        int linesReturned = (jdbcTemplate.update(sql, amountToTransfer, userSending, amountToTransfer, userReceiving));
-        if (userSending == userReceiving){
-            return success;
-        }
-        if (linesReturned == 1){
-            success = true;
-        }
-        return success;
-    }*/
-
-    /*@Override
-    public int Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
-        String sql = "UPDATE account " +
-                "SET balance = balance - ? " +
-                "WHERE user_id = ?; " +
-                "UPDATE account " +
-                "SET balance = balance + ? " +
-                "WHERE user_id = ?;";
-        boolean success = false;
-        Integer linesReturned = jdbcTemplate.queryForObject(sql, Integer.class, amountToTransfer, userSending, amountToTransfer, userReceiving);
-        if (userSending != userReceiving){
-            return success;
-        }
-        if (linesReturned == 1){
-            *//*success = true;*//*
-        }
-        return linesReturned;
-    }*/
+    private Transfer mapRowToTransfer(SqlRowSet results){
+        int transferId = results.getInt("transfer_id");
+        int userSending = results.getInt("user_sending");
+        int userReceiving = results.getInt("user_receiving");
+        BigDecimal moneyTransferred = results.getBigDecimal("amount");
+        String status = results.getString("status");
+        return new Transfer(transferId, userSending, userReceiving, moneyTransferred, status);
+    }
 }
 
 // Posting/deleting JSON objects to database
@@ -117,3 +103,15 @@ public class JdbcTransferDao implements TransferDao {
 // 4: Java doesn't run the transaction if the user doesn't have permissions (logged in user can only be userSending, can't initiate a transaction from another person's account)
 // 5: Java assigns the transaction a number, starting at 3001 & going up for every transaction, no matter who does it
 // 6: Java stores that number in the transaction table in relation to the userIds of userSending and userReceiving
+
+
+// Notes from Margaret:
+
+// 1: Have API with /listOfUsers
+// 3: transfer model with user id's / account id's - join tables. userTo, userFrom, amount, status
+// 6: Verify sender has enough money - if I have enough money, then I'm going to: decrease my account.
+//      `Decrease my account
+//          If this fails, jump out / throw an exception
+//       Increase their account
+//          If this fails, jump out / throw an exception
+//       Insert into transfer table

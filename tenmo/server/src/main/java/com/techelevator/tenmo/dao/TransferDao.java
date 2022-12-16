@@ -7,9 +7,9 @@ import java.util.List;
 
 public interface TransferDao {
 
-    Transfer getTransfer();
+    Transfer getTransfer(int userId, int transferId);
 
-    List<Transfer> getAllTransfers();
+    List<Transfer> getAllTransfers(int userId);
 
     boolean Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
 
