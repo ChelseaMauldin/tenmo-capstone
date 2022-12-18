@@ -36,8 +36,8 @@ public class JdbcTransferDao implements TransferDao {
     public List<Transfer> getAllTransfers(int userId) {
         List<Transfer> transferList = new ArrayList<>();
         String sql = "SELECT transfer_id, user_sending, user_receiving, amount, status " +
-                     "FROM transfer " +
-                     "WHERE user_sending = ? OR user_receiving = ?;";
+                "FROM transfer " +
+                "WHERE user_sending = ? OR user_receiving = ?;";
         SqlRowSet results = jdbcTemplate.queryForRowSet(sql, userId, userId);
         while (results.next()) {
             transferList.add(mapRowToTransfer(results));
@@ -46,7 +46,7 @@ public class JdbcTransferDao implements TransferDao {
     }
 
     @Override
-    public boolean Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
+    public boolean transfer(int userSending, int userReceiving, BigDecimal amountToTransfer) {
         String sql = "UPDATE account " +
                 "SET balance = balance - ? " +
                 "WHERE user_id = ?; " +
@@ -63,7 +63,7 @@ public class JdbcTransferDao implements TransferDao {
         }
 
         if ((userSending != userReceiving) && (amountToTransfer.compareTo(new BigDecimal("0.00")) > 0)
-                && (amountToTransfer.compareTo(balance) < 0)) {
+                && (amountToTransfer.compareTo(balance) <= 0)) {
             jdbcTemplate.update(sql, amountToTransfer, userSending, amountToTransfer, userReceiving);
             return true;
         }
@@ -84,7 +84,7 @@ public class JdbcTransferDao implements TransferDao {
         return true;
     }
 
-    private Transfer mapRowToTransfer(SqlRowSet results){
+    private Transfer mapRowToTransfer(SqlRowSet results) {
         int transferId = results.getInt("transfer_id");
         int userSending = results.getInt("user_sending");
         int userReceiving = results.getInt("user_receiving");

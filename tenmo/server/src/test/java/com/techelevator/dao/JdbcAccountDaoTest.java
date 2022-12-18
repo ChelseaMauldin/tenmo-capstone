@@ -1,6 +1,7 @@
-package com.techelevator.tenmo.dao;
+package com.techelevator.dao;
 
 import com.techelevator.dao.BaseDaoTests;
+import com.techelevator.tenmo.dao.JdbcAccountDao;
 import com.techelevator.tenmo.model.Account;
 import org.junit.Assert;
 import org.junit.Before;
@@ -64,7 +65,7 @@ public class JdbcAccountDaoTest extends BaseDaoTests {
     }
 
     @Test
-    public void getBalance_returns_correct_balance(){
+    public void getBalance_returns_correct_balance() {
         BigDecimal expected = new BigDecimal("1000.00");
         BigDecimal actual = dao.getBalance(1001);
         Assert.assertEquals(expected, actual);
@@ -82,21 +83,15 @@ public class JdbcAccountDaoTest extends BaseDaoTests {
     }
 
     private void assertAccountListsMatch(List<Account> expected, List<Account> actual) {
-        Assert.assertEquals(expected.get(0).getAccountId(), actual.get(0).getAccountId());
-        Assert.assertEquals(expected.get(0).getUserId(), actual.get(0).getUserId());
-        Assert.assertEquals(expected.get(0).getBalance(), actual.get(0).getBalance());
-        Assert.assertEquals(expected.get(1).getAccountId(), actual.get(1).getAccountId());
-        Assert.assertEquals(expected.get(1).getUserId(), actual.get(1).getUserId());
-        Assert.assertEquals(expected.get(1).getBalance(), actual.get(1).getBalance());
-        Assert.assertEquals(expected.get(2).getAccountId(), actual.get(2).getAccountId());
-        Assert.assertEquals(expected.get(2).getUserId(), actual.get(2).getUserId());
-        Assert.assertEquals(expected.get(2).getBalance(), actual.get(2).getBalance());
-        Assert.assertEquals(expected.get(3).getAccountId(), actual.get(3).getAccountId());
-        Assert.assertEquals(expected.get(3).getUserId(), actual.get(3).getUserId());
-        Assert.assertEquals(expected.get(3).getBalance(), actual.get(3).getBalance());
-        Assert.assertEquals(expected.get(4).getAccountId(), actual.get(4).getAccountId());
-        Assert.assertEquals(expected.get(4).getUserId(), actual.get(4).getUserId());
-        Assert.assertEquals(expected.get(4).getBalance(), actual.get(4).getBalance());
+        if (expected.size() == actual.size()) {
+            for (int i = 0; i < expected.size(); i++) {
+                Assert.assertEquals(expected.get(i).getAccountId(), actual.get(i).getAccountId());
+                Assert.assertEquals(expected.get(i).getUserId(), actual.get(i).getUserId());
+                Assert.assertEquals(expected.get(i).getBalance(), actual.get(i).getBalance());
+            }
+        }
+
+
     }
 
 }

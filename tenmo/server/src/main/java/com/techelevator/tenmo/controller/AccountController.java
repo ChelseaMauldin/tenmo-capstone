@@ -70,7 +70,7 @@ public class AccountController {
     public boolean transferMoney(@RequestBody Transfer transfer, Principal principal) {
         String username = principal.getName();
         int userId = userDao.findIdByUsername(username);
-        if ((userId != transfer.getUserSending()) || ((transferDao.Transfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred())) == false)) {
+        if ((userId != transfer.getUserSending()) || ((transferDao.transfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred())) == false)) {
             transferDao.createTransfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred(), "Denied");
         } else {
             transferDao.createTransfer(transfer.getUserSending(), transfer.getUserReceiving(), transfer.getMoneyTransferred(), "Approved");
@@ -88,14 +88,14 @@ public class AccountController {
     }
 
     @RequestMapping(path = "/account/transfer/all_transfers", method = RequestMethod.GET)
-    public List<Transfer> getAllTransfers(Principal principal){
+    public List<Transfer> getAllTransfers(Principal principal) {
         String username = principal.getName();
         int userId = userDao.findIdByUsername(username);
         return transferDao.getAllTransfers(userId);
     }
 
     @RequestMapping(path = "/account/transfer/{transferId}", method = RequestMethod.GET)
-    public Transfer transfer(@PathVariable int transferId, Principal principal){
+    public Transfer transfer(@PathVariable int transferId, Principal principal) {
         String username = principal.getName();
         int userId = userDao.findIdByUsername(username);
         return transferDao.getTransfer(userId, transferId);

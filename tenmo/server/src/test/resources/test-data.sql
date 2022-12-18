@@ -51,10 +51,10 @@ CREATE TABLE transfer (
 
 INSERT INTO tenmo_user (username, password_hash)
 VALUES ('bob', '$2a$10$G/MIQ7pUYupiVi72DxqHquxl73zfd7ZLNBoB2G6zUb.W16imI2.W2'),
-       ('user', '$2a$10$Ud8gSvRS4G1MijNgxXWzcexeXlVs4kWDOkjE7JFIkNLKEuE57JAEy'),
-       ('ann', 'ann'),
+       ('ann', '$2a$10$Ud8gSvRS4G1MijNgxXWzcexeXlVs4kWDOkjE7JFIkNLKEuE57JAEy'),
        ('jim', 'jim'),
-       ('joe', 'joe');
+       ('joe', 'joe'),
+       ('sue', 'sue');
 
 INSERT INTO account(user_id, balance)
 VALUES (1001, 1000.00),
@@ -68,6 +68,6 @@ VALUES (1001, 1002, 325.00, 'Approved'),
        (1002, 1002, 400.00, 'Denied'),
        (1003, 1004, 0.00, 'Denied'),
        (1004, 1005, -325.00, 'Denied'),
-       (1005, 1004, 600.00, 'Denied'),
+       (1005, 1004, 600.00, 'Denied');
 
 COMMIT;

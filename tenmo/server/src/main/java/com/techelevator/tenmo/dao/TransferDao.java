@@ -11,7 +11,7 @@ public interface TransferDao {
 
     List<Transfer> getAllTransfers(int userId);
 
-    boolean Transfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
+    boolean transfer(int userSending, int userReceiving, BigDecimal amountToTransfer);
 
     boolean createTransfer(int userSending, int userReceiving,
                            BigDecimal amountToTransfer, String status);

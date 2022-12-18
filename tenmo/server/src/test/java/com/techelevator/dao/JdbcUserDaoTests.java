@@ -62,19 +62,19 @@ public class JdbcUserDaoTests extends BaseDaoTests {
         Assert.assertEquals(expected, actual);
 
         expected = 1002;
-        actual = sut.findIdByUsername("user");
+        actual = sut.findIdByUsername("ann");
         Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void listUsernames_returns_list_of_users_except_the_one_logged_in() {
         List<String> expected = new ArrayList<>();
-        expected.add("user");
         expected.add("ann");
         expected.add("jim");
         expected.add("joe");
+        expected.add("sue");
         List<String> actual = sut.listUsernames("bob");
         Assert.assertEquals(expected, actual);
     }
-    
+
 }
